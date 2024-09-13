@@ -1,0 +1,33 @@
+package programkasirwarungberas;
+import java.util.Scanner;
+public class programkasirsederhana{
+  public static void main(String[]args){
+    Scanner input = new Scanner(System.in);
+    //Deklarasi variabel
+    System.out.println("selamat datang di toko kami");
+    System.out.println("selamat berbelanja");
+    double jumlahBeras, hargaPerkg, totalHarga, diskon, totalHargaSetelahDiskon, uangDiberikan, kembalian;
+    //Memasukkan data pembelian
+    System.out.print("Masukkan jumlah beras (kg) : ");
+    jumlahBeras = input.nextDouble();
+    System.out.print("Masukkan harga beras per kg : ");
+    hargaPerkg = input.nextDouble();
+    //Menghitung total harga sebelum diskon
+    totalHarga = jumlahBeras * hargaPerkg;
+    System.out.println("Total harga sebelum diskon : " +  totalHarga);
+    //Menghitung diskon
+    diskon = 0.05 * totalHarga;
+    System.out.println("Diskon : " + diskon);
+    //Menghitung total harga setelah diskon
+    totalHargaSetelahDiskon = totalHarga - diskon;
+    System.out.println("Total harga setelah diskon 5% : " + totalHargaSetelahDiskon);
+    //Memasukkan jumlah uang yang dibayar
+    System.out.print("Masukkan uang yang di berikan : ");
+    uangDiberikan = input.nextDouble();
+    //Menghitung kembalian
+    kembalian = uangDiberikan - totalHargaSetelahDiskon;
+    System.out.println("Kembalian : "+kembalian);
+    System.out.println("terima kasih");
+    System.out.println("silahkan datang kembali");
+  }
+}
