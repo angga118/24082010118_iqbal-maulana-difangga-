@@ -1,0 +1,14 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ */
+
+package com.mycompany.mavenproject1;
+public class Helloworld {
+
+    public static void main(String[] args) {
+        System.out.println("Hello World!");
+        System.out.println("saya cinta indonesia");
+        System.out.println("nama:iqbal maulana difangga");
+        System.out.println("npm: 24082010118");
+    }
+}
