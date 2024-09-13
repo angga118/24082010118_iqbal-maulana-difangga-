@@ -4,8 +4,6 @@ public class programkasirsederhana{
   public static void main(String[]args){
     Scanner input = new Scanner(System.in);
     //Deklarasi variabel
-    System.out.println("selamat datang di toko kami");
-    System.out.println("selamat berbelanja");
     double jumlahBeras, hargaPerkg, totalHarga, diskon, totalHargaSetelahDiskon, uangDiberikan, kembalian;
     //Memasukkan data pembelian
     System.out.print("Masukkan jumlah beras (kg) : ");
@@ -28,6 +26,5 @@ public class programkasirsederhana{
     kembalian = uangDiberikan - totalHargaSetelahDiskon;
     System.out.println("Kembalian : "+kembalian);
     System.out.println("terima kasih");
-    System.out.println("silahkan datang kembali");
   }
 }
