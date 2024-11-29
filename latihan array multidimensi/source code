@@ -14,7 +14,7 @@ public class LatihanArrayMultiDimensi {
             int nota[][]    = new int [5][3];
             do{
                 System.out.println("==== Aplikasi Kasir ====\n");
-                System.out.println("1. Kemeja\n2. Sandal\n3. Sepatu");
+                System.out.println("1. Kemeja\n2. kaos\n3. Sepatu");
                 System.out.println("4. Selesai");
 
                 System.out.print("Pilih : ");
@@ -26,10 +26,10 @@ public class LatihanArrayMultiDimensi {
                 switch(pilih) {
                     case 1:
 
-                        System.out.println("Kemeja [50.000]");
+                        System.out.println("Kemeja [75.000]");
                         if(baris<5) {
                             brg[baris] = "Kemeja";
-                            nota[baris][0] = 50000;
+                            nota[baris][0] = 75000;
 
                             System.out.print("Jumlah : ");
                             jumlah = input.nextInt();
@@ -54,10 +54,10 @@ public class LatihanArrayMultiDimensi {
 
                     case 2:
 
-                        System.out.println("Sandal [16.000]");
+                        System.out.println("kaos [30.000]");
                         if(baris<5) {
-                            brg[baris] = "Sandal";
-                            nota[baris][0] = 16000;
+                            brg[baris] = "kaos";
+                            nota[baris][0] = 30000;
 
                             System.out.print("Jumlah : ");
                             jumlah = input.nextInt();
@@ -108,7 +108,7 @@ public class LatihanArrayMultiDimensi {
                         System.out.println("Daftar Belanja Anda");
                             for (int i = 0; i < baris; i++) {
                                 System.out.print((i + 1) + ". ");
-                                System.out.print(brg[i] + "\t||\t");
+                                System.out.print(brg[i] + "   \t||\t");
                                 System.out.print(nota[i][0] + "\t||\t");
                                 System.out.print(nota[i][1] + "\t||\t");
                                 System.out.println(nota[i][2]);
