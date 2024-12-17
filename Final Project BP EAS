@@ -1,0 +1,272 @@
+package finalprojecteas;
+import java.util.Scanner;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
+public class FinalProjectEAS{
+    
+      static int mCari(String data[], String kata) {
+        for (int i = 0; i < data.length; i++) {
+            if (data[i] != null && data[i].equalsIgnoreCase(kata)) {
+                return i; // Mengembalikan indeks saat data ditemukan
+            }
+        }
+        return -1; // Jika tidak ditemukan
+    }
+    
+    public static void main(String[] args) {
+       //1. kasir --> pemesanan makanan
+       //2. adin --> penambahan menu
+       //3. owner
+       Scanner sc = new Scanner(System.in);
+       int user=0;
+       
+       //array untuk data master Warung Makan
+       String Menu[] = new String[15];
+       int Harga[] = new int[15];
+       int jumlah=4;
+       Menu[0] = "Bronies lumer"; Harga[0] = 15000;
+       Menu[1] = "Risol mayo"; Harga[1] = 4000;
+       Menu[2] = "Muffins kelapa"; Harga[2] = 5000;
+       Menu[3] = "Muffins coklat"; Harga[3] = 7000;
+       
+       //array untuk pembelian
+       String menu[] = new String[50];
+       int harga[] = new int[50];
+       int porsi[] = new int[50];
+       int idx = 0;
+       
+       do{
+           System.out.println("\nUSER");
+           System.out.println("1.Kasir");
+           System.out.println("2.Admin");
+           System.out.println("3.Owner");
+           System.out.println("4.Exit");
+           System.out.print("Pilih : ");
+           user = sc.nextInt();
+           switch(user){
+               case 1:
+                   int pilihKasir; 
+                   do {
+                       System.out.println("\nUSER KASIR");
+                       System.out.println("Tanggal: " + LocalDate.now());
+                       System.out.println("\nDaftar Menu");
+                       for (int i = 0; i < jumlah; i++) {
+                           System.out.print((i + 1) + ". " + Menu[i]);
+                           System.out.println(" [" + Harga[i] + "]");
+                       }
+                       
+                       System.out.println("\n1. Pesan Menu");
+                       System.out.println("2. Urutkan Nama Menu");
+                       System.out.println("3. Urutkan Harga Menu");
+                       System.out.println("4. Exit");
+                       System.out.print("Pilih: ");
+                       pilihKasir = sc.nextInt();
+                       
+                       switch (pilihKasir) {
+                           case 1:
+                               // Pesanan makanan
+                               System.out.print("Pilih Menu: ");
+                               int pilih = sc.nextInt();
+                               System.out.print("Jumlah Porsi: ");
+                               porsi[idx] = sc.nextInt();
+                               menu[idx] = Menu[(pilih - 1)];
+                               harga[idx] = Harga[(pilih - 1)];
+
+                               int total = porsi[idx] * harga[idx];
+                               System.out.println("Satuan porsi: " + harga[idx]);
+                               System.out.println("Total       : " + total);
+
+                               // List daftar pesanan
+                               System.out.println("\nDaftar Pembelian");
+                               System.out.println("No\tMenu\t\tHarga\tqty\tTotal");
+                               for (int i = 0; i <= idx; i++) {
+                                   System.out.print((i + 1) + "\t" + menu[i]);
+                                   System.out.print("\t" + harga[i]);
+                                   System.out.print("\t" + porsi[i]);
+                                   System.out.println("\t" + harga[i] * porsi[i]);
+                               }
+
+                               idx++;
+                               break;
+
+                           case 2:
+                               // Mengurutkan menu berdasarkan nama
+                               for (int i = 0; i < jumlah - 1; i++) {
+                                   for (int j = 0; j < jumlah - 1 - i; j++) {
+                                       if (Menu[j].compareToIgnoreCase(Menu[j + 1]) > 0) {
+                                           // Tukar nama menu
+                                           String tempNama = Menu[j];
+                                           Menu[j] = Menu[j + 1];
+                                           Menu[j + 1] = tempNama;
+
+                                           // Tukar harga menu
+                                           int tempHarga = Harga[j];
+                                           Harga[j] = Harga[j + 1];
+                                           Harga[j + 1] = tempHarga;
+                                       }
+                                   }
+                               }
+
+                               System.out.println("\nMenu telah diurutkan berdasarkan nama:");
+                               for (int i = 0; i < jumlah; i++) {
+                                   System.out.println((i + 1) + ". " + Menu[i] + " [" + Harga[i] + "]");
+                               }
+                               break;
+
+                           case 3:
+                               // Mengurutkan menu berdasarkan harga
+                               for (int i = 0; i < jumlah - 1; i++) {
+                                   for (int j = 0; j < jumlah - 1 - i; j++) {
+                                       if (Harga[j] > Harga[j + 1]) {
+                                           // Tukar nama menu
+                                           String tempNama = Menu[j];
+                                           Menu[j] = Menu[j + 1];
+                                           Menu[j + 1] = tempNama;
+
+                                           // Tukar harga menu
+                                           int tempHarga = Harga[j];
+                                           Harga[j] = Harga[j + 1];
+                                           Harga[j + 1] = tempHarga;
+                                       }
+                                   }
+                               }
+
+                               System.out.println("\nMenu telah diurutkan berdasarkan harga:");
+                               for (int i = 0; i < jumlah; i++) {
+                                   System.out.println((i + 1) + ". " + Menu[i] + " [" + Harga[i] + "]");
+                               }
+                               break;
+
+                           case 4:
+                               System.out.println("Kembali ke Menu Utama...");
+                               break;
+
+                           default:
+                               System.out.println("Pilihan tidak valid.");
+                               break;
+                       }
+                   } while (pilihKasir != 4); // Kembali ke submenu Kasir selama belum memilih opsi 4
+                   break;
+
+               case 2:
+                   System.out.println("\nUSER ADMIN");
+                   System.out.println("1.Tambah Menu");
+                   System.out.println("2.Hapus Menu");
+                   System.out.println("3.Ubah Menu");
+                   System.out.print("Pilih : ");
+                   int pilih2 = sc.nextInt();
+                   switch(pilih2){
+                       case 1:
+                           // Tambah Menu Baru
+                           sc.nextLine();
+                           System.out.print("Menu Baru : ");
+                           Menu[jumlah] = sc.nextLine();
+                           System.out.print("Harga : ");
+                           Harga[jumlah] = sc.nextInt();
+                           jumlah++;
+                           System.out.println("Menu berhasil ditambahkan!");
+                           break;
+
+                       case 2:
+                           // Hapus Menu
+                           sc.nextLine();
+                           System.out.print("Menu lama: ");
+                           String nama = sc.nextLine();
+                           int idk = mCari(Menu, nama);
+
+                           if (idk == -1) {
+                               System.out.println("Menu tidak ada!");
+                           } else {
+                            // Menggeser array untuk menghapus data
+                               for (int i = idk; i < jumlah - 1; i++) {
+                                   Menu[i] = Menu[i + 1];
+                                   Harga[i] = Harga[i + 1];
+                               }
+                               jumlah--;
+                               System.out.println("Menu berhasil dihapus.");
+                           }
+                           break;
+
+                        case 3:
+                            // Ubah Menu
+                            sc.nextLine();
+                            System.out.print("Nama menu lama: ");
+                            String menuLama = sc.nextLine();
+                            int idk3 = mCari(Menu, menuLama);
+
+                            if (idk3 == -1) {
+                                System.out.println("Menu tidak ditemukan!");
+                            } else {
+                                System.out.print("Nama menu baru: ");
+                                Menu[idk3] = sc.nextLine();
+                                System.out.print("Harga menu baru: ");
+                                Harga[idk3] = sc.nextInt();
+                                System.out.println("Menu berhasil diubah!");
+                            }
+                            break;
+
+
+                   }
+                   break;
+               case 3:
+                    System.out.println("\nUSER OWNER");
+                    LocalDateTime now = LocalDateTime.now();
+                    DateTimeFormatter format = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
+                    System.out.println("Laporan dibuat pada: " + now.format(format));
+                    // Menghitung total pemasukan dari transaksi
+                    int totalPemasukan = 0;
+                    for (int i = 0; i < idx; i++) {
+                        totalPemasukan += harga[i] * porsi[i];
+                    }
+                    System.out.println("Total pemasukan: " + totalPemasukan);
+                    
+                    // Menghitung jumlah terjual per menu
+                    int[] jumlahTerjual = new int[jumlah]; // Array untuk menyimpan jumlah terjual
+                    for (int i = 0; i < jumlah; i++) {
+                        for (int j = 0; j < idx; j++) {
+                            if (Menu[i].equalsIgnoreCase(menu[j])) {
+                                jumlahTerjual[i] += porsi[j];
+                            }
+                        }
+                    }
+
+                    // Mengurutkan menu berdasarkan jumlah terjual 
+                    for (int i = 0; i < jumlah; i++) {
+                        for (int j = i + 1; j < jumlah; j++) {
+                            if (jumlahTerjual[i] < jumlahTerjual[j]) {
+                                // Tukar jumlah terjual
+                                int tempJumlah = jumlahTerjual[i];
+                                jumlahTerjual[i] = jumlahTerjual[j];
+                                jumlahTerjual[j] = tempJumlah;
+
+                                // Tukar menu dan harga
+                                String tempMenu = Menu[i];
+                                Menu[i] = Menu[j];
+                                Menu[j] = tempMenu;
+
+                                int tempHarga = Harga[i];
+                                Harga[i] = Harga[j];
+                                Harga[j] = tempHarga;
+                            }
+                        }
+                    }
+
+                    // Menampilkan daftar 5 menu terlaris
+                    System.out.println("\nDaftar 5 menu terlaris:");
+                    for (int i = 0; i < Math.min(5, jumlah); i++) {
+                        System.out.println((i + 1) + ". " + Menu[i] + " (Terjual: " + jumlahTerjual[i] + ")");
+                    }
+                    break;
+
+                   
+               case 4:
+                   System.out.println("Terima Kasih...");
+                   break;
+           }
+       }while(user!=4);
+
+    }
+
+}
