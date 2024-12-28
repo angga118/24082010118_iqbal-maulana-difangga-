@@ -1,0 +1,410 @@
+package com.mycompany.finalproject1;
+import java.util.ArrayList;
+import java.util.Scanner;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
+public class FinalProject {
+    // Variabel untuk total pemasukan
+    static int totalPemasukan = 0;
+
+    static int mCari(ArrayList<String> data, String kata) {
+        for (int i = 0; i < data.size(); i++) {
+            if (data.get(i).equalsIgnoreCase(kata)) {
+                return i; // Mengembalikan indeks saat data ditemukan
+            }
+        }
+        return -1; // Jika tidak ditemukan
+    }
+
+    static void displayMenu(ArrayList<String> Menu, ArrayList<Integer> Harga) {
+        System.out.printf("%-20s %20s\n", "Menu", "Harga"); // Header tabel
+        System.out.println("-------------------- ---------------------"); // Garis pemisah
+        for (int i = 0; i < Menu.size(); i++) {
+            System.out.printf((i + 1) + "." + "%-20s Rp %16d\n", Menu.get(i), Harga.get(i)); // Isi tabel
+        }
+    }
+
+    // Metode untuk mengurutkan menu berdasarkan nama
+    static void urutkanMenuBerdasarkanNama(ArrayList<String> Menu, ArrayList<Integer> Harga) {
+        for (int i = 0; i < Menu.size() - 1; i++) {
+            for (int j = i + 1; j < Menu.size(); j++) {
+                if (Menu.get(j).compareToIgnoreCase(Menu.get(i)) < 0) {
+                    // Tukar menu
+                    String tempMenu = Menu.get(i);
+                    Menu.set(i, Menu.get(j));
+                    Menu.set(j, tempMenu);
+
+                    // Tukar harga
+                    int tempHarga = Harga.get(i);
+                    Harga.set(i, Harga.get(j));
+                    Harga.set(j, tempHarga);
+                }
+            }
+        }
+        System.out.println("\nMenu setelah diurutkan berdasarkan nama:");
+        displayMenu(Menu, Harga);
+    }
+
+    // Metode untuk mengurutkan menu berdasarkan harga
+    static void urutkanMenuBerdasarkanHarga(ArrayList<String> Menu, ArrayList<Integer> Harga) {
+        for (int i = 0; i < Harga.size() - 1; i++) {
+            for (int j = i + 1; j < Harga.size(); j++) {
+                if (Harga.get(j) < Harga.get(i)) {
+                    // Tukar harga
+                    int tempHarga = Harga.get(i);
+                    Harga.set(i, Harga.get(j));
+                    Harga.set(j, tempHarga);
+
+                    // Tukar menu
+                    String tempMenu = Menu.get(i);
+                    Menu.set(i, Menu.get(j));
+                    Menu.set(j, tempMenu);
+                }
+            }
+        }
+        System.out.println("\nMenu setelah diurutkan berdasarkan harga:");
+        displayMenu(Menu, Harga);
+    }
+
+    public static void main(String[] args) {
+        // PIN untuk masing-masing mode
+        final int PIN_KASIR = 240820;
+        final int PIN_ADMIN = 101180;
+        final int PIN_OWNER = 100405;
+
+        Scanner sc = new Scanner(System.in);
+        int user = 0;
+
+        // ArrayList untuk data master Warung Makan
+        ArrayList<String> Menu = new ArrayList<>();
+        ArrayList<Integer> Harga = new ArrayList<>();
+        Menu.add("Bebek Goreng");
+        Harga.add(15000);
+        Menu.add("Ayam Goreng");
+        Harga.add(13000);
+        Menu.add("nila Goreng");
+        Harga.add(10000);
+        Menu.add("Telur Goreng");
+        Harga.add(6000);
+        Menu.add("Nasi Putih");
+        Harga.add(4000);
+        Menu.add("Es Teh");
+        Harga.add(3000);
+        Menu.add("Teh Hangat");
+        Harga.add(3000);
+
+        // Array untuk melacak jumlah terjual per menu secara global
+        int[] jumlahTerjualGlobal = new int[Menu.size()];
+
+        // Array untuk pembelian ```java
+        ArrayList<String> menu = new ArrayList<>();
+        ArrayList<Integer> harga = new ArrayList<>();
+        ArrayList<Integer> porsi = new ArrayList<>();
+
+        do {
+            System.out.println(" ");
+            System.out.println(" ------- Warung SAROH AGUNG Nasi Bebek Ayam goreng ------- ");
+            System.out.println("               JL. Sumatera No.29, Gubeng");
+            System.out.println("          ===================================== ");
+            System.out.println(" ");
+            System.out.println("---------------------  Mode User ----------------------");
+            System.out.println("1.Kasir");
+            System.out.println("2.Admin");
+            System.out.println("3.Owner");
+            System.out.println("4.Exit");
+            System.out.print("Pilih : ");
+            user = sc.nextInt();
+
+            switch (user) {
+                case 1:
+                    System.out.print("Masukkan PIN Kasir: ");
+                    int pinKasir = sc.nextInt();
+                    if (pinKasir == PIN_KASIR) {
+                        int pilihKasir;
+                        do {
+                            System.out.println(" ");
+                            System.out.println("           Mode User Kasir           ");
+                            System.out.println("        Tanggal:   " + LocalDate.now());
+                            System.out.println("------------------------------------------");
+                            System.out.println("                Daftar Menu               ");
+                            displayMenu(Menu, Harga);
+                            System.out.println("------------------------------------------");
+                            System.out.println("\n1. Pesan Menu");
+                            System.out.println("2. Urutkan Nama Menu");
+                            System.out.println("3. Urutkan Harga Menu");
+                            System.out.println("4. Exit");
+                            System.out.print("Pilih: ");
+                            pilihKasir = sc.nextInt();
+
+                            switch (pilihKasir) {
+                                case 1:
+                                    int pilih;
+                                    do {
+                                        // Tampilkan menu
+                                        System.out.println(" ");
+                                        System.out.println("               Daftar Menu                ");
+                                        displayMenu(Menu, Harga);
+                                        System.out.println("0. Selesai Memesan");
+                                        System.out.print("Pilih Menu (0 untuk selesai): ");
+                                        pilih = sc.nextInt();
+
+                                        if (pilih > 0 && pilih <= Menu.size()) {
+                                            // Input jumlah porsi
+                                            System.out.print("Jumlah Porsi                : ");
+                                            int jumlahPorsi = sc.nextInt();
+
+                                            // Simpan data pesanan
+                                            menu.add(Menu.get(pilih - 1));
+                                            harga.add(Harga.get(pilih - 1));
+                                            porsi.add(jumlahPorsi);
+
+                                            // Hitung total harga untuk item ini
+                                            int total = jumlahPorsi * Harga.get(pilih - 1);
+                                            System.out.println("Satuan porsi                : Rp." + Harga.get(pilih - 1));
+                                            System.out.println("Total                       : Rp." + total);
+                                        } else if (pilih != 0) {
+                                            System.out.println("Menu tidak valid. Silakan pilih lagi.");
+                                        }
+
+                                    } while (pilih != 0);
+
+                                    // List daftar pesanan
+                                    System.out.println(" ");
+                                    System.out.println("-----------------------------------------------------------------");
+                                    System.out.println("                       Daftar Pembelian                          ");
+                                    System.out.println("-----------------------------------------------------------------");
+                                    System.out.printf("%-5s %-20s %-10s %-5s %-10s\n", "No", "Menu", "Harga", "Qty", "Total");
+                                    for (int i = 0; i < menu.size(); i++) {
+                                        System.out.printf("%-5d %-20s Rp %-9d %-5d Rp %-10d\n",
+                                        (i + 1), 
+                                        menu.get(i), 
+                                        harga.get(i), 
+                                        porsi.get(i), 
+                                        harga.get(i) * porsi.get(i));
+                                    }
+
+                                    // Menghitung grand total
+                                    int grandTotal = 0;
+                                    for (int i = 0; i < harga.size(); i++) {
+                                        grandTotal += harga.get(i) * porsi.get(i);
+                                    }
+
+                                    System.out.println("-----------------------------------------------------------------");
+                                    System.out.println("                                        Grand Total : " + grandTotal);
+                                    System.out.println("-----------------------------------------------------------------");
+
+                                    // Menambahkan ke total pemasukan
+                                    totalPemasukan += grandTotal;
+
+                                    // Update jumlah terjual global
+                                    for (int i = 0; i < menu.size(); i++) {
+                                        int index = mCari(Menu, menu.get(i));
+                                        if (index != -1) {
+                                            jumlahTerjualGlobal[index] += porsi.get(i);
+                                        }
+                                    }
+
+                                    int uangTunai;
+                                    do {
+                                        // Input uang tunai
+                                        System.out.print("                         Masukkan jumlah uang tunai : ");
+                                        uangTunai = sc.nextInt();
+
+                                        if (uangTunai < grandTotal) {
+                                            System.out.println("Uang tunai kurang! Total yang harus dibayar: " + grandTotal);
+                                            System.out.println("Silakan masukkan jumlah yang mencukupi.");
+                                        }
+
+                                    } while (uangTunai < grandTotal); // Ulangi input jika uang kurang
+
+                                    // Menghitung kembalian
+                                    int kembalian = uangTunai - grandTotal;
+                                    System.out.println("                                        Kembalian : " + kembalian);
+                                    // Reset data pesanan untuk Kasir
+                                    menu.clear(); // Mengosongkan daftar pesanan
+                                    harga.clear();
+                                    porsi.clear();
+                                    break;
+
+                                case 2:
+                                    // Mengurutkan berdasarkan nama menu
+                                    urutkanMenuBerdasarkanNama(Menu, Harga);
+                                    break;
+
+                                case 3:
+                                    // Mengurutkan berdasarkan harga menu
+                                    urutkanMenuBerdasarkanHarga(Menu, Harga);
+                                    break;
+
+                                case 4:
+                                    break;
+
+                                default:
+                                    System.out.println("Pilihan tidak valid.");
+                                    break;
+                            }
+                        } while (pilihKasir != 4); // Kembali ke submenu Kasir selama belum memilih opsi 4
+                    } else {
+                        System.out.println("PIN salah! Akses ditolak.");
+                    }
+                    break;
+
+                case 2:
+                    System.out.print("Masukkan PIN Admin: ");
+                    int pinAdmin = sc.nextInt();
+                    if (pinAdmin == PIN_ADMIN) {
+                        System.out.println(" ");
+                        System.out.println("                USER ADMIN                ");
+                        System.out.println("------------------------------------------");
+                        System.out.println("1.Tambah Menu");
+                        System.out.println("2.Hapus Menu");
+                        System.out.println("3.Ubah Menu");
+                        System.out.println("4.Ubah Harga");
+                        System.out.print("Pilih : ");
+                        int pilih2 = sc.nextInt();
+                        switch (pilih2) {
+                            case 1:
+                                // Tambah Menu Baru
+                                sc.nextLine();
+                                System.out.print("Menu Baru : ");
+                                String menuBaru = sc.nextLine();
+                                System.out.print("Harga     : ");
+                                int hargaBaru = sc.nextInt();
+                                Menu.add(menuBaru);
+                                Harga.add(hargaBaru);
+                                // Inisialisasi jumlah terjual untuk menu baru
+                                int[] newJumlahTerjualGlobal = new int[Menu.size()];
+                                System.arraycopy(jumlahTerjualGlobal, 0, newJumlahTerjualGlobal, 0, jumlahTerjualGlobal.length);
+                                newJumlahTerjualGlobal[Menu.size() - 1] = 0; // Set jumlah terjual untuk menu baru ke 0
+                                jumlahTerjualGlobal = newJumlahTerjualGlobal;
+                                System.out.println("Menu berhasil ditambahkan!");
+                                break;
+
+                            case 2:
+                                // Hapus Menu
+                                sc.nextLine();
+                                System.out.print("Menu lama: ");
+                                String nama = sc.nextLine();
+                                int idk = mCari(Menu, nama);
+
+                                if (idk == -1) {
+                                    System.out.println("Menu tidak ada!");
+                                } else {
+                                    Menu.remove(idk);
+                                    Harga.remove(idk);
+                                    // Hapus jumlah terjual yang sesuai
+                                    int[] newJumlahTerjualGlobal2 = new int[Menu.size()];
+                                    System.arraycopy(jumlahTerjualGlobal, 0, newJumlahTerjualGlobal2, 0, idk);
+                                    System.arraycopy(jumlahTerjualGlobal, idk + 1, newJumlahTerjualGlobal2, idk, jumlahTerjualGlobal.length - idk - 1);
+                                    jumlahTerjualGlobal = newJumlahTerjualGlobal2;
+                                    System.out.println("Menu berhasil dihapus.");
+                                }
+                                break;
+
+                            case 3:
+                                // Ubah Menu
+                                sc.nextLine();
+                                System.out.print("Nama menu lama : ");
+                                String menuLama = sc.nextLine();
+                                int idk3 = mCari(Menu, menuLama);
+
+                                if (idk3 == -1) {
+                                    System.out.println("Menu tidak ditemukan!");
+                                } else {
+                                    System.out.print("Nama menu baru : ");
+                                    Menu.set(idk3, sc.nextLine());
+                                    System.out.print("Harga menu baru: ");
+                                    Harga.set(idk3, sc.nextInt());
+                                    System.out.println("Menu berhasil diubah!");
+                                }
+                                break;
+
+                            case 4:
+                                // Ubah Harga Menu
+                                sc.nextLine(); // Membersihkan buffer input
+                                System.out.print("Nama menu yang ingin diubah harganya : ");
+                                String menuUbahHarga = sc.nextLine();
+                                int idk4 = mCari(Menu, menuUbahHarga);
+
+                                if (idk4 == -1) {
+                                    System.out.println("Menu tidak ditemukan!");
+                                } else {
+                                    System.out.print("Harga baru untuk " + Menu.get(idk4) + ": ");
+                                    Harga.set(idk4, sc.nextInt());
+                                    System.out.println("Harga berhasil diubah!");
+                                }
+                                break;
+
+                            default:
+                                System.out.println("Pilihan tidak valid.");
+                                break;
+                        }
+                    } else {
+                        System.out.println("PIN salah! Akses ditolak.");
+                    }
+                    break;
+
+                case 3:
+                    System.out.print("Masukkan PIN Owner: ");
+                    int pinOwner = sc.nextInt();
+                    if (pinOwner == PIN_OWNER) {
+                        System.out.println(" ");
+                        System.out.println("               USER OWNER                 ");
+                        System.out.println("------------------------------------------");
+                        LocalDateTime now = LocalDateTime.now();
+                        DateTimeFormatter format = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
+                        System.out.println("Laporan dibuat pada: " + now.format(format));
+
+                        // Menampilkan total pemasukan
+                        System.out.println("Total pemasukan selama transaksi: " + totalPemasukan);
+
+                        // Menghitung jumlah terjual per menu
+                        System.out.println("Jumlah terjual per menu:");
+                        for (int i = 0; i < Menu.size(); i++) {
+                            System.out.println(Menu.get(i) + ": " + jumlahTerjualGlobal[i]);
+                        }
+
+                        // Mengurutkan menu berdasarkan jumlah terjual
+                        for (int i = 0; i < Menu.size(); i++) {
+                            for (int j = i + 1; j < Menu.size(); j++) {
+                                if (jumlahTerjualGlobal[i] < jumlahTerjualGlobal[j]) {
+                                    // Tukar jumlah terjual
+                                    int tempJumlah = jumlahTerjualGlobal[i];
+                                    jumlahTerjualGlobal[i] = jumlahTerjualGlobal[j];
+                                    jumlahTerjualGlobal[j] = tempJumlah;
+
+                                    // Tukar menu dan harga
+                                    String tempMenu = Menu.get(i);
+                                    Menu.set(i, Menu.get(j));
+                                    Menu.set(j, tempMenu);
+
+                                    int tempHarga = Harga.get(i);
+                                    Harga.set(i, Harga.get(j));
+                                    Harga.set(j, tempHarga);
+                                }
+                            }
+                        }
+
+                        // Menampilkan daftar 5 menu terlaris
+                        System.out.println("\nDaftar 5 menu terlaris:");
+                        for (int i = 0; i < Math.min(5, Menu.size()); i++) {
+                            System.out.println((i + 1) + ". " + Menu.get(i) + " (Terjual: " + jumlahTerjualGlobal[i] + ")");
+                        }
+
+                    } else {
+                        System.out.println("PIN salah! Akses ditolak.");
+                    }
+                    break;
+
+                case 4:
+                    System.out.println("Terima kasih!");
+                    break;
+
+                default:
+                    System.out.println("Pilihan tidak valid!");
+            }
+        } while (user != 4);
+    }
+}
