@@ -1,0 +1,151 @@
+-- 1. Buat perintah SQL untuk membuat database baru "dbkrs"
+CREATE DATABASE basdatfinal;
+USE basdatfinal;
+
+-- 1. Tabel Prodi
+CREATE TABLE Prodi (
+    Id_Prodi INT PRIMARY KEY AUTO_INCREMENT,
+    Nama_Prodi VARCHAR(255),
+    Jenjang VARCHAR(50),
+    Fakultas VARCHAR(255)
+);
+
+-- 2. Tabel Semester
+CREATE TABLE Semester (
+    Id_Semester INT PRIMARY KEY AUTO_INCREMENT,
+    Nama_Semester VARCHAR(255),
+    Tahun_Akademik VARCHAR(255),
+    Tanggal_Mulai DATE,
+    Tanggal_Selesai DATE,
+    Status ENUM('aktif', 'tidak') NOT NULL
+);
+
+-- 3. Tabel Dosen
+CREATE TABLE Dosen (
+    Id_Dosen INT PRIMARY KEY AUTO_INCREMENT,
+    NIP VARCHAR(20) UNIQUE,
+    Nama_Dosen VARCHAR(255),
+    Id_Prodi INT,
+    FOREIGN KEY (Id_Prodi) REFERENCES Prodi(Id_Prodi) ON DELETE CASCADE
+);
+
+-- 4. Tabel Mahasiswa
+CREATE TABLE Mahasiswa (
+    NPM INT PRIMARY KEY AUTO_INCREMENT,
+    Nama_Mhs VARCHAR(255) NOT NULL,
+    Id_Prodi INT,
+    Id_Semester INT,
+    Status_Mhs ENUM('aktif', 'tidak_aktif', 'cuti') NOT NULL,
+    Email VARCHAR(255) UNIQUE NOT NULL,
+    FOREIGN KEY (Id_Prodi) REFERENCES Prodi(Id_Prodi) ON DELETE CASCADE,
+    FOREIGN KEY (Id_Semester) REFERENCES Semester(Id_Semester) ON DELETE CASCADE
+);
+
+-- 5. Tabel Mata Kuliah (MK)
+CREATE TABLE MK (
+    Id_MK INT PRIMARY KEY AUTO_INCREMENT,
+    Nama_MK VARCHAR(255) NOT NULL,
+    Kode_MK VARCHAR(50) UNIQUE NOT NULL,
+    SKS INT NOT NULL,
+    Id_Dosen INT,
+    Id_Semester INT,
+    Id_Prodi INT,
+    Hari ENUM('Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu') NOT NULL,
+    Jam_Mulai TIME NOT NULL,
+    Jam_Selesai TIME NOT NULL,
+    FOREIGN KEY (Id_Dosen) REFERENCES Dosen(Id_Dosen) ON DELETE CASCADE,
+    FOREIGN KEY (Id_Semester) REFERENCES Semester(Id_Semester) ON DELETE CASCADE,
+    FOREIGN KEY (Id_Prodi) REFERENCES Prodi(Id_Prodi) ON DELETE CASCADE
+);
+
+-- 6. Tabel KRS
+CREATE TABLE KRS (
+    id_KRS INT PRIMARY KEY AUTO_INCREMENT,
+    id_Mhs INT,
+    Id_Semester INT,
+    Status_KRS ENUM('Disetujui', 'pending', 'ditolak') NOT NULL,
+    Tanggal_Pengajuan DATE NOT NULL,
+    IPK FLOAT CHECK (IPK BETWEEN 0 AND 4),
+    FOREIGN KEY (id_Mhs) REFERENCES Mahasiswa(NPM) ON DELETE CASCADE,
+    FOREIGN KEY (Id_Semester) REFERENCES Semester(Id_Semester) ON DELETE CASCADE
+);
+
+-- 7. Tabel KRS Detail
+CREATE TABLE KRS_Detail (
+    Id_KRS_Detail INT PRIMARY KEY AUTO_INCREMENT,
+    Id_KRS INT,
+    Id_MK INT,
+    Nilai INT CHECK (Nilai BETWEEN 0 AND 100),
+    SKS INT NOT NULL,
+    FOREIGN KEY (Id_KRS) REFERENCES KRS(Id_KRS) ON DELETE CASCADE,
+    FOREIGN KEY (Id_MK) REFERENCES MK(Id_MK) ON DELETE CASCADE
+);
+
+-- 8. Tabel Nilai
+CREATE TABLE Nilai (
+    Id_Nilai INT PRIMARY KEY AUTO_INCREMENT,
+    Id_KRS_Detail INT,
+    Jenis_Nilai ENUM('UTS', 'UAS', 'Tugas', 'Quiz') NOT NULL,
+    Nilai_Angka INT CHECK (Nilai_Angka BETWEEN 0 AND 100),
+    Bobot FLOAT CHECK (Bobot BETWEEN 0 AND 4),
+    FOREIGN KEY (Id_KRS_Detail) REFERENCES KRS_Detail(Id_KRS_Detail) ON DELETE CASCADE
+);
+
+-- 9. Insert Data
+INSERT INTO Prodi (Nama_Prodi, Jenjang, Fakultas) VALUES
+('Mesin', 'S1', 'Teknik'),
+('Manajemen', 'S1', 'Ekonomi');
+
+INSERT INTO Semester (Nama_Semester, Tahun_Akademik, Tanggal_Mulai, Tanggal_Selesai, Status) VALUES
+('Ganjil', '2024/2025', '2024-08-01', '2025-01-30', 'aktif');
+
+INSERT INTO Dosen (NIP, Nama_Dosen, Id_Prodi) VALUES
+('123456', 'Dr. bramasta', 1),
+('234567', 'Dr. budi', 2);
+
+INSERT INTO MK (Nama_MK, Kode_MK, SKS, Id_Dosen, Id_Semester, Id_Prodi, Hari, Jam_Mulai, Jam_Selesai) 
+VALUES
+('Manufaktur', 'IF101', 3, 1, 1, 1, 'Senin', '08:00', '10:00'),
+('Manajemen Keuangan', 'MN201', 3, 2, 1, 2, 'Selasa', '10:00', '12:00');
+
+INSERT INTO Mahasiswa (Nama_Mhs, Id_Prodi, Id_Semester, Status_Mhs, Email) VALUES
+('Budi Herlambang', 1, 1, 'aktif', 'budi@email.com'),
+('Siti Aisyah', 2, 1, 'aktif', 'siti@email.com');
+
+INSERT INTO KRS (id_Mhs, Id_Semester, Status_KRS, Tanggal_Pengajuan, IPK) VALUES
+(1, 1, 'Disetujui', '2024-08-15', 3.5),
+(2, 1, 'Disetujui', '2024-08-16', 3.8);
+
+INSERT INTO KRS_Detail (Id_KRS, Id_MK, Nilai, SKS) VALUES
+(1, 1, 85, 3),
+(2, 2, 90, 3);
+
+INSERT INTO Nilai (Id_KRS_Detail, Jenis_Nilai, Nilai_Angka, Bobot) VALUES
+(1, 'UTS', 87, 4.0),
+(2, 'UAS', 93, 4.0);
+
+
+-- 11. Query untuk menampilkan daftar mahasiswa yang terdaftar dalam mata kuliah tertentu
+SELECT M.Nama_Mhs, MK.Nama_MK
+FROM Mahasiswa M
+JOIN KRS K ON M.NPM = K.id_Mhs
+JOIN KRS_Detail KD ON K.id_KRS = KD.Id_KRS
+JOIN MK ON KD.Id_MK = MK.Id_MK
+WHERE MK.Nama_MK = 'Manufaktur';
+
+-- 12. Query untuk menampilkan daftar mata kuliah yang diajarkan oleh seorang dosen tertentu
+SELECT MK.Nama_MK, D.Nama_Dosen
+FROM Dosen D
+LEFT JOIN MK ON D.Id_Dosen = MK.Id_Dosen;
+
+-- 13. Query untuk menghasilkan nilai mahasiswa berdasarkan mata kuliah
+SELECT M.Nama_Mhs, MK.Nama_MK, N.Jenis_Nilai, N.Nilai_Angka, N.Bobot
+FROM Mahasiswa M
+JOIN KRS K ON M.NPM = K.id_Mhs
+JOIN KRS_Detail KD ON K.id_KRS = KD.Id_KRS
+JOIN MK ON KD.Id_MK = MK.Id_MK
+JOIN Nilai N ON KD.Id_KRS_Detail = N.Id_KRS_Detail;
+
+-- 14. Query untuk menampilkan semua mata kuliah beserta SKS dan jadwalnya
+SELECT MK.Nama_MK, MK.SKS, MK.Hari, MK.Jam_Mulai, MK.Jam_Selesai
+FROM MK;
