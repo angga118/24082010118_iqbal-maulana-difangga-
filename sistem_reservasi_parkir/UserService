@@ -1,0 +1,164 @@
+import java.sql.*;
+import java.util.Scanner;
+
+public class UserService {
+    static Scanner scanner = new Scanner(System.in);
+
+    public static int loginUser() {
+        while (true) {
+            System.out.print("Username: ");
+            String username = scanner.nextLine();
+            System.out.print("Password: ");
+            String password = scanner.nextLine();
+
+            try (Connection conn = DBConnection.getConnection()) {
+                PreparedStatement stmt = conn.prepareStatement(
+                    "SELECT id_user FROM user WHERE username=? AND password=? AND role='pengguna'");
+                stmt.setString(1, username);
+                stmt.setString(2, password);
+                ResultSet rs = stmt.executeQuery();
+
+                if (rs.next()) {
+                    System.out.println("Login sukses sebagai pengguna!");
+                    return rs.getInt("id_user");
+                } else {
+                    System.out.println("Login gagal! Username/password salah atau bukan role 'user'.");
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public static int loginAdmin() {
+        System.out.println("\n=== LOGIN ADMIN ===");
+        System.out.print("Username: ");
+        String username = scanner.nextLine();
+        System.out.print("Password: ");
+        String password = scanner.nextLine();
+
+        try (Connection conn = DBConnection.getConnection()) {
+            PreparedStatement stmt = conn.prepareStatement(
+                "SELECT id_user FROM user WHERE username=? AND password=? AND role='admin'");
+            stmt.setString(1, username);
+            stmt.setString(2, password);
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                System.out.println("Login admin berhasil!");
+                return rs.getInt("id_user");
+            } else {
+                System.out.println("Login admin gagal! Username/password salah atau bukan admin.");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return -1;
+    }
+
+    public static void registerUser() {
+        try (Connection conn = DBConnection.getConnection()) {
+            System.out.print("Nama: ");
+            String nama = scanner.nextLine();
+            System.out.print("Username: ");
+            String username = scanner.nextLine();
+            System.out.print("Email: ");
+            String email = scanner.nextLine();
+            System.out.print("No HP: ");
+            String nohp = scanner.nextLine();
+            System.out.print("Password: ");
+            String password = scanner.nextLine();
+
+            PreparedStatement stmt = conn.prepareStatement(
+                "INSERT INTO user (nama, username, email, no_hp, password, role) VALUES (?, ?, ?, ?, ?, 'pengguna')");
+            stmt.setString(1, nama);
+            stmt.setString(2, username);
+            stmt.setString(3, email);
+            stmt.setString(4, nohp);
+            stmt.setString(5, password);
+            stmt.executeUpdate();
+
+            System.out.println("Registrasi berhasil! Silakan login.");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+    public static void ubahUsernamePassword(int userId) {
+    try (Connection conn = DBConnection.getConnection()) {
+        // Ambil username dan password lama dari database
+        PreparedStatement checkStmt = conn.prepareStatement(
+            "SELECT username, password FROM user WHERE id_user = ?");
+        checkStmt.setInt(1, userId);
+        ResultSet rs = checkStmt.executeQuery();
+
+        if (!rs.next()) {
+            System.out.println("Data pengguna tidak ditemukan.");
+            return;
+        }
+
+        String currentPassword = rs.getString("password");
+
+        // Verifikasi password lama
+        System.out.print("Masukkan password lama: ");
+        String oldPassword = scanner.nextLine();
+        if (!currentPassword.equals(oldPassword)) {
+            System.out.println("Password lama salah. Perubahan dibatalkan.");
+            return;
+        }
+
+        // Pilihan update
+        System.out.println("\n=== UBAH USERNAME/PASSWORD ===");
+        System.out.println("1. Ubah Username");
+        System.out.println("2. Ubah Password");
+        System.out.println("3. Ubah Keduanya");
+        System.out.print("Pilih: ");
+        int pilihan = Integer.parseInt(scanner.nextLine());
+
+        String newUsername = null;
+        String newPassword = null;
+
+        if (pilihan == 1 || pilihan == 3) {
+            System.out.print("Username baru: ");
+            newUsername = scanner.nextLine();
+        }
+
+        if (pilihan == 2 || pilihan == 3) {
+            System.out.print("Password baru: ");
+            newPassword = scanner.nextLine();
+        }
+
+        // Buat query dinamis
+        String query = "UPDATE user SET ";
+        if (newUsername != null && newPassword != null) {
+            query += "username=?, password=? ";
+        } else if (newUsername != null) {
+            query += "username=? ";
+        } else if (newPassword != null) {
+            query += "password=? ";
+        }
+        query += "WHERE id_user=?";
+
+        PreparedStatement stmt = conn.prepareStatement(query);
+
+        int paramIndex = 1;
+        if (newUsername != null) {
+            stmt.setString(paramIndex++, newUsername);
+        }
+        if (newPassword != null) {
+            stmt.setString(paramIndex++, newPassword);
+        }
+        stmt.setInt(paramIndex, userId);
+
+        int rowsUpdated = stmt.executeUpdate();
+        if (rowsUpdated > 0) {
+            System.out.println("Perubahan berhasil disimpan!");
+        } else {
+            System.out.println("Gagal memperbarui data.");
+        }
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
+}
+
+}
