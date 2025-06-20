@@ -13,6 +13,11 @@ public class AdminService {
             System.out.println("4. Lihat Data User");
             System.out.println("5. Laporan Pemakaian Slot");
             System.out.println("6. Laporan Pendapatan");
+            System.out.println("7. Lihat Slot Tersedia (VIEW)");
+            System.out.println("8. Laporan CROSSTAB");
+            System.out.println("9. Laporan CTE");
+            System.out.println("10. Laporan SUBQUERY");
+            System.out.println("11. Hapus User"); 
             System.out.println("0. Logout");
             System.out.print("Pilih menu: ");
 
@@ -24,9 +29,14 @@ public class AdminService {
                 case "4" -> lihatDataUser();
                 case "5" -> laporanPemakaianSlot();
                 case "6" -> laporanPendapatan();
+                case "7" -> lihatSlotTersediaView();
+                case "8" -> ReportService.laporanCrosstab();
+                case "9" -> ReportService.laporanCTE();
+                case "10" -> ReportService.laporanSubquery();
+                case "11" -> hapusUser();
                 case "0" -> {
                     System.out.println("Logout berhasil.");
-                    return; // keluar dari menu admin
+                    return;
                 }
                 default -> System.out.println("Pilihan tidak valid. Silakan coba lagi.");
             }
@@ -93,7 +103,6 @@ public class AdminService {
         e.printStackTrace();
     }
 }
-
 
     private static void lihatReservasiDenganFilter() {
         while (true) {
@@ -266,119 +275,44 @@ public class AdminService {
     }
 
     private static void lihatDataUser() {
-        while (true) {
-            System.out.println("\nFilter Data User:");
-            System.out.println("1. Nama");
-            System.out.println("2. Username");
-            System.out.println("3. Email");
-            System.out.println("4. Nomor HP");
-            System.out.println("K. Kembali ke menu admin");
-            System.out.print("Pilih filter (1-4) atau K untuk kembali: ");
-            String pilihan = scanner.nextLine().trim();
+        System.out.println("=== Data User ===");
+        String query = "SELECT id_user, nama, username, email, no_hp, role FROM user";
 
-            if (pilihan.equalsIgnoreCase("K")) {
-                break;
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query);
+             ResultSet rs = stmt.executeQuery()) {
+
+            while (rs.next()) {
+                System.out.println("ID: " + rs.getInt("id_user") +
+                        " | Nama: " + rs.getString("nama") +
+                        " | Username: " + rs.getString("username") +
+                        " | Email: " + rs.getString("email") +
+                        " | HP: " + rs.getString("no_hp") +
+                        " | Role: " + rs.getString("role"));
             }
 
-            String sql = "SELECT id_user, nama, username, email, no_hp, role FROM user ";
-            String filterValue = null;
-
-            switch (pilihan) {
-                case "1" -> {
-                    sql += "WHERE nama LIKE ? ";
-                    System.out.print("Masukkan Nama: ");
-                    filterValue = scanner.nextLine().trim();
-                }
-                case "2" -> {
-                    sql += "WHERE username LIKE ? ";
-                    System.out.print("Masukkan Username: ");
-                    filterValue = scanner.nextLine().trim();
-                }
-                case "3" -> {
-                    sql += "WHERE email LIKE ? ";
-                    System.out.print("Masukkan Email: ");
-                    filterValue = scanner.nextLine().trim();
-                }
-                case "4" -> {
-                    sql += "WHERE no_hp LIKE ? ";
-                    System.out.print("Masukkan Nomor HP: ");
-                    filterValue = scanner.nextLine().trim();
-                }
-                default -> {
-                    System.out.println("Pilihan filter tidak valid.");
-                    continue;
-                }
-            }
-
-            try (Connection conn = DBConnection.getConnection();
-                 PreparedStatement stmt = conn.prepareStatement(sql)) {
-                stmt.setString(1, "%" + filterValue + "%");
-                ResultSet rs = stmt.executeQuery();
-
-                System.out.println("\n--- DATA USER ---");
-                boolean adaData = false;
-                while (rs.next()) {
-                    adaData = true;
-                    System.out.printf("ID User: %d | Nama: %s | Username: %s | Email: %s | No HP: %s | Role: %s%n",
-                            rs.getInt("id_user"), rs.getString("nama"),
-                            rs.getString("username"), rs.getString("email"),
-                            rs.getString("no_hp"), rs.getString("role"));
-                }
-                if (!adaData) {
-                    System.out.println("Tidak ada data user yang ditemukan.");
-                }
-            } catch (SQLException e) {
-                System.out.println("Error melihat data user: " + e.getMessage());
-            }
-
-            System.out.print("\nKetik 'K' untuk kembali ke menu admin, atau tekan ENTER untuk filter lagi: ");
-            String kembali = scanner.nextLine().trim();
-            if (kembali.equalsIgnoreCase("K")) {
-                break;
-            }
+        } catch (SQLException e) {
+            System.out.println("Gagal mengambil data user: " + e.getMessage());
         }
     }
 
-   
-
     private static void laporanPemakaianSlot() {
-        while (true) {
-            try (Connection conn = DBConnection.getConnection()) {
-                System.out.println("\n--- LAPORAN PEMAKAIAN SLOT PARKIR ---");
-                System.out.print("Masukkan tanggal mulai (yyyy-MM-dd): ");
-                String tglMulai = scanner.nextLine().trim();
-                System.out.print("Masukkan tanggal akhir (yyyy-MM-dd): ");
-                String tglAkhir = scanner.nextLine().trim();
+        System.out.println("=== Laporan Pemakaian Slot ===");
+        String query = "SELECT s.lokasi, COUNT(r.id_reservasi) AS total_reservasi " +
+                       "FROM slot_parkir s LEFT JOIN reservasi_parkir r ON s.id_slot = r.id_slot " +
+                       "GROUP BY s.lokasi";
 
-                String sql = "SELECT id_slot, COUNT(*) AS jumlah_penggunaan " +
-                             "FROM reservasi_parkir " +
-                             "WHERE waktu_masuk BETWEEN ? AND ? " +
-                             "GROUP BY id_slot ORDER BY jumlah_penggunaan DESC";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query);
+             ResultSet rs = stmt.executeQuery()) {
 
-                PreparedStatement stmt = conn.prepareStatement(sql);
-                stmt.setString(1, tglMulai + " 00:00:00");
-                stmt.setString(2, tglAkhir + " 23:59:59");
-
-                ResultSet rs = stmt.executeQuery();
-                boolean adaData = false;
-                while (rs.next()) {
-                    adaData = true;
-                    System.out.printf("ID Slot: %s | Jumlah Penggunaan: %d%n",
-                            rs.getString("id_slot"), rs.getInt("jumlah_penggunaan"));
-                }
-                if (!adaData) {
-                    System.out.println("Tidak ada data pemakaian slot pada rentang tanggal tersebut.");
-                }
-
-                System.out.print("\nKetik 'K' untuk kembali ke menu admin, atau tekan ENTER untuk lihat lagi: ");
-                String kembali = scanner.nextLine().trim();
-                if (kembali.equalsIgnoreCase("K")) {
-                    break;
-                }
-            } catch (SQLException e) {
-                System.out.println("Error laporan pemakaian slot: " + e.getMessage());
-                break;
+            while (rs.next()) {
+                System.out.println("Lokasi: " + rs.getString("lokasi") +
+                        " | Total Reservasi: " + rs.getInt("total_reservasi"));
             }
+
+        } catch (SQLException e) {
+            System.out.println("Gagal membuat laporan pemakaian slot: " + e.getMessage());
         }
     }
 
@@ -429,5 +363,46 @@ public class AdminService {
             }
         }
 
+    
+
+    private static void lihatSlotTersediaView() {
+        try {
+            SlotTersediaView view = new SlotTersediaView();
+            view.tampilkanSlotTersedia();
+        } catch (Exception e) {
+            System.out.println("Gagal menampilkan slot tersedia dari VIEW: " + e.getMessage());
+        }
     }
 
+    private static void hapusUser() {
+    System.out.print("Masukkan ID user yang ingin dihapus: ");
+    int idUser = Integer.parseInt(scanner.nextLine());
+
+    System.out.print("Yakin ingin menghapus user dengan ID " + idUser + "? (y/n): ");
+    String konfirmasi = scanner.nextLine();
+
+    if (!konfirmasi.equalsIgnoreCase("y")) {
+        System.out.println("Penghapusan dibatalkan.");
+        return;
+    }
+
+    String query = "DELETE FROM user WHERE id_user = ?";
+
+    try (Connection conn = DBConnection.getConnection();
+         PreparedStatement stmt = conn.prepareStatement(query)) {
+
+        stmt.setInt(1, idUser);
+        int affectedRows = stmt.executeUpdate();
+
+        if (affectedRows > 0) {
+            System.out.println("User berhasil dihapus.");
+        } else {
+            System.out.println("User dengan ID tersebut tidak ditemukan.");
+        }
+
+    } catch (SQLException e) {
+        System.out.println("Gagal menghapus user: " + e.getMessage());
+    }
+}
+
+}
