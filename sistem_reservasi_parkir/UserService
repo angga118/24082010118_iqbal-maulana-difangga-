@@ -1,5 +1,6 @@
 import java.sql.*;
 import java.util.Scanner;
+import java.util.Stack;
 
 public class UserService {
     static Scanner scanner = new Scanner(System.in);
@@ -161,4 +162,21 @@ public class UserService {
     }
 }
 
+    Stack<String> historiReservasi = new Stack<>();
+
+public void tambahReservasi(String dataReservasi) {
+    historiReservasi.push(dataReservasi);
+    System.out.println("Reservasi berhasil: " + dataReservasi);
 }
+
+public void undoReservasi() {
+    if (!historiReservasi.isEmpty()) {
+        String dibatalkan = historiReservasi.pop();
+        System.out.println("Reservasi dibatalkan: " + dibatalkan);
+    } else {
+        System.out.println("Tidak ada reservasi yang bisa di-undo.");
+    }
+}
+
+}
+
