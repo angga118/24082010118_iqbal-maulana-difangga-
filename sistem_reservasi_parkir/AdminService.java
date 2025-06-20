@@ -17,7 +17,7 @@ public class AdminService {
             System.out.println("8. Laporan CROSSTAB");
             System.out.println("9. Laporan CTE");
             System.out.println("10. Laporan SUBQUERY");
-            System.out.println("11. Hapus User"); 
+            System.out.println("11. Hapus User"); // tambahkan ini di atas 'Logout'
             System.out.println("0. Logout");
             System.out.print("Pilih menu: ");
 
@@ -406,3 +406,4 @@ public class AdminService {
 }
 
 }
+
