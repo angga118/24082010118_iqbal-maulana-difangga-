@@ -276,7 +276,7 @@ javac -cp ".;lib/mysql-connector-j-8.0.33.jar" *.java
 java -cp ".;lib/mysql-connector-j-8.0.33.jar" Main
 ```
 
-## Catatan 📝:Pastikan nama class utama adalah Main.java, dan koneksi database sudah sesuai (lihat DBConnection.java).
+## Catatan 📝:Pastikan nama class utama adalah App.java, dan koneksi database sudah sesuai (lihat DBConnection.java).
 
 ---
 
