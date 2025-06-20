@@ -257,7 +257,7 @@ HAVING jumlah = (
 * *User ↔ Kendaraan*: 1 user bisa punya banyak kendaraan
 * *User ↔ Reservasi*: 1 user bisa membuat banyak reservasi
 * *Kendaraan ↔ Reservasi*: 1 kendaraan bisa digunakan berkali-kali
-* *Slot ↔ Reservasi: 1 slot bisa dipakai berkali-kali *(tidak bersamaan)
+* *Slot ↔ Reservasi*: 1 slot bisa dipakai berkali-kali (tidak bersamaan)
 * *Reservasi ↔ ViewSlotTersedia*: View khusus untuk menampilkan slot yang belum dipakai
 
 ---
