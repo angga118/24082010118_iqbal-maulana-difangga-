@@ -14,7 +14,7 @@ Dibangun menggunakan **Java Console** dan **MySQL**, sistem ini dilengkapi denga
 USE parkir_gedung;
 ```
 
-### Tabel Utama
+### Tabel 
 
 ```sql
 CREATE TABLE user (
@@ -63,6 +63,11 @@ CREATE TABLE log_parkir (
     keterangan VARCHAR(255),
     FOREIGN KEY (id_reservasi) REFERENCES reservasi_parkir(id_reservasi)
 );
+
+CREATE OR REPLACE VIEW ViewSlotTersedia AS
+SELECT id_slot, lokasi, lantai
+FROM slot_parkir
+WHERE status = 'tersedia';
 ```
 
 ### Data Awal
@@ -271,7 +276,7 @@ javac -cp ".;lib/mysql-connector-j-8.0.33.jar" *.java
 java -cp ".;lib/mysql-connector-j-8.0.33.jar" Main
 ```
 
-## Catatan 📝:Pastikan nama class utama adalah Main.java, dan koneksi database sudah sesuai (lihat DBConnection.java).
+## Catatan 📝:Pastikan nama class utama adalah App.java, dan koneksi database sudah sesuai (lihat DBConnection.java).
 
 ---
 
