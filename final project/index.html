@@ -1,0 +1,101 @@
+<!-- Simpan sebagai: index.html -->
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MaGood Mart</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <button class="checkout-btn" onclick="checkoutItems()">🛒 Checkout</button>
+
+  <header>
+    <div class="header-content">
+      <h1 class="logo-text">MaGood Mart</h1>
+      <nav>
+        <a href="index.html">HOME</a>
+        <a href="about.html">ABOUT MAGGOT</a>
+        <a href="service.html">SERVICE</a>
+        <a href="contact.html">CONTACT US</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="left-section">
+      <img src="images/logo.png" alt="Logo" class="logo-img" />
+      <p class="tagline">🌱 <em><strong>Solusi Cerdas untuk Pakan Ternak dan Budidaya Maggot</strong></em></p>
+      <p class="desc">Bantu UMKM maggot berkembang dan temukan kebutuhan pakan ternak ramah lingkungan — dari maggot hidup, telur, hingga perlengkapan budidaya — semuanya ada di sini.</p>
+      <a href="login.php" class="signup-btn">LOGIN</a>
+    </section>
+    <section class="right-section">
+      <div class="maggot-frame">
+        <div class="shadow-box"></div>
+        <img src="images/maggot.jpg" alt="Maggot" class="maggot-img" />
+      </div>
+    </section>
+  </main>
+
+<section class="about-section">
+    <h2 class="about-title">What MaGood Mart Have??</h2>
+    <div class="card-container">
+      <!-- Kartu Maggot -->
+      <div class="product-card">
+        <img src="images/maggot.jpg" alt="Maggot" class="product-img" />
+        <h3>Maggot</h3>
+        <p style="text-align: center;">Maggot dengan kualitas terbaik berdasarkan mitra kita!</p>
+      </div>
+
+      <!-- Kartu Telur Maggot -->
+      <div class="product-card">
+        <img src="images/telur_maggot.jpg" alt="Telur Maggot" class="product-img" />
+        <h3>Telur Maggot</h3>
+        <p style="text-align: center;">Telur Maggot premium yang belum pernah kalian temukan!</p>
+      </div>
+
+      <!-- Kartu Paket Budidaya -->
+      <div class="product-card">
+        <img src="images/hasil.jpg" alt="Paket Budidaya" class="product-img" />
+        <h3>Paket Budidaya</h3>
+        <p style="text-align: center;">Siap membudidayakan Maggot dan Telurnya!</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="service-slider">
+  <h2 class="service-title">Masih Ragu Dengan MaGood Mart?!</h2>
+  <p style="font-size: 20px; margin-top: -10px; margin-bottom: 30px; text-align: center;">Kami menyediakan berbagai jenis konsultasi untuk kamu yang masih pemula!</p> 
+  
+  <div class="service-row">
+    <div class="service-card">
+      <h3 style="text-align: center;">MaGood MasterGuide</h3>
+      <p style="text-align: center;">
+        Layanan berisi informasi lengkap dan mudah dipahami mengenai cara penggunaan produk maggot untuk berbagai jenis ternak, termasuk penyimpanan maggot hidup atau kering, takaran pemberian, dan penyajian informasi berupa teks dan infografis.
+      </p>
+    </div>
+
+    <div class="service-card">
+      <h3 style="text-align: center;">MaGood Academy</h3>
+      <p style="text-align: center;">
+        Layanan informasi berupa blog edukatif berisi artikel, wawasan, dan tips dari para ahli seputar penggunaan maggot sebagai pakan ternak, manfaat maggot bagi lingkungan, dan inovasi budidaya. Konten ini disusun untuk meningkatkan literasi peternak dan publik mengenai pentingnya alternatif pakan yang ramah lingkungan. 
+      </p>
+    </div>
+
+    <div class="service-card">
+      <h3 style="text-align: center;">MaGood Care</h3>
+      <p style="text-align: center;">
+        Layanan konsultasi online bagi peternak yang ingin mengetahui lebih lanjut seputar penggunaan maggot sebagai pakan ternak. Melalui layanan MaGood Care, pembeli dapat bertanya langsung mengenai jumlah kebutuhan pakan yang ideal, cara pemberian yang benar, dan saran produk terbaik sesuai dengan kebutuhan spesifik.
+      </p>
+    </div>
+  </div>
+</section>
+
+  <footer class="footer">
+    created by MaGood Mart ♥
+  </footer>
+
+  <script src="jsscript.js"></script>
+</body>
+</html>
